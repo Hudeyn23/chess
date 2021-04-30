@@ -19,11 +19,6 @@ public class Main extends Application {
 
         Scene scene = new Scene(p);
         scene.getStylesheets().add("sample.css");
-        scene.setOnMouseMoved((evt) -> c.mouseMoved(evt));
-        scene.setOnMouseDragged((evt)->c.mouseMoved(evt));
-/*		scene.setOnMousePressed((evt) -> c.mousePressed(evt));
-		scene.setOnMouseReleased((evt) -> c.mouseReleased(evt));
-*/
         primaryStage.setScene( scene );
         primaryStage.show();
     }

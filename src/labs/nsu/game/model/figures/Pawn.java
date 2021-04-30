@@ -13,7 +13,7 @@ public class Pawn extends AbstractChessFigure {
 
     @Override
     public boolean checkTurn(Cell start, Cell dest, ChessBoard board) {
-        return canCellBeReached(start, dest, board) || canCellBeAttacked(start, dest, board);
+        return (dest.isEmpty() && canCellBeReached(start, dest, board)) || (!dest.isEmpty() && dest.getCellFigure().getColor() != color && canCellBeAttacked(start, dest, board));
     }
 
     @Override
@@ -30,29 +30,20 @@ public class Pawn extends AbstractChessFigure {
     @Override
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
         if (color == Color.WHITE) {
-            if ((start.getX() == dest.getX() + 1 || start.getX() == dest.getX() - 1) && start.getY() + 1 == dest.getY()) {
-                return !dest.isEmpty() && dest.getCellFigure().getColor() != color;
-            }
+            return (start.getX() == dest.getX() + 1 || start.getX() == dest.getX() - 1) && start.getY() + 1 == dest.getY();
+
         } else {
-            if ((start.getX() == dest.getX() + 1 || start.getX() == dest.getX() - 1) && start.getY() - 1 == dest.getY()) {
-                return !dest.isEmpty() && dest.getCellFigure().getColor() != color;
-            }
+            return (start.getX() == dest.getX() + 1 || start.getX() == dest.getX() - 1) && start.getY() - 1 == dest.getY();
         }
-        return false;
     }
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
         if (color == Color.WHITE) {
-            if (start.getX() == dest.getX() && start.getY() + 1 == dest.getX()) {
-                return dest.isEmpty();
-            }
+            return start.getX() == dest.getX() && (start.getY() + 1 == dest.getY() || start.getY() == 1 && start.getY() + 2 == dest.getY());
         } else {
-            if (start.getX() == dest.getX() && start.getY() - 1 == dest.getX()) {
-                return dest.isEmpty();
-            }
+            return start.getX() == dest.getX() && (start.getY() - 1 == dest.getY() || start.getY() == 6 && start.getY() - 2 == dest.getY());
         }
-        return false;
     }
 
 
@@ -66,6 +57,6 @@ public class Pawn extends AbstractChessFigure {
     }
 
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenPawn" : "goldenPawn";
+        return color.equals(Color.BLACK) ? "greenPawn" : "goldenPawn";
     }
 }

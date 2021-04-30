@@ -20,7 +20,7 @@ public class King extends AbstractChessFigure {
     }
 
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenKing" : "goldenKing";
+        return color.equals(Color.BLACK) ? "greenKing" : "goldenKing";
     }
 
     @Override

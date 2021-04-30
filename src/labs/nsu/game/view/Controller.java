@@ -24,6 +24,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -44,7 +45,7 @@ public class Controller {
 
     private final Logger log = Logger.getLogger("RooksAndBishopsController");
     @FXML
-    Rectangle rectangle;
+    Rectangle movingRectangle;
     @FXML
     Rectangle leavingRectangle;
 
@@ -243,16 +244,17 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        leavingRectangle = new Rectangle(100, 100);
         ChessBoard board = model.getBoard();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (!board.getCell(i, j).isEmpty()) {
+                if (!board.getCell(j, i).isEmpty()) {
                     Rectangle figure = new Rectangle(100, 100);
-                    figure.setLayoutX(j * 100);
-                    figure.setLayoutY(i * 100);
+                    figure.setLayoutX(j*100);
+                    figure.setLayoutY(700 - i * 100);
                     figure.setFill(Color.DODGERBLUE);
                     figure.setStroke(Color.TRANSPARENT);
-                    figure.getStyleClass().add(board.getCell(i, j).getCellFigure().getStyleClass());
+                    figure.getStyleClass().add(board.getCell(j, i).getCellFigure().getStyleClass());
                     figure.setOnMouseDragged(this::movePiece);
                     figure.setOnMousePressed(this::startMovingPiece);
                     figure.setOnMouseReleased(this::finishMovingPiece);
@@ -260,9 +262,6 @@ public class Controller {
                 }
             }
         }
-        rectangle.setLayoutX(0);
-        leavingRectangle.setLayoutX(0);
-        leavingRectangle.setOpacity(0.0d);
 
         panes.add(row0);
         panes.add(row1);
@@ -303,9 +302,9 @@ public class Controller {
 
             timeline.getKeyFrames().add(
                     new KeyFrame(Duration.millis(200),
-                            new KeyValue(rectangle.layoutXProperty(), leavingRectangle.getLayoutX()),
-                            new KeyValue(rectangle.layoutYProperty(), leavingRectangle.getLayoutY()),
-                            new KeyValue(rectangle.opacityProperty(), 1.0d),
+                            new KeyValue(movingRectangle.layoutXProperty(), leavingRectangle.getLayoutX()),
+                            new KeyValue(movingRectangle.layoutYProperty(), leavingRectangle.getLayoutY()),
+                            new KeyValue(movingRectangle.opacityProperty(), 1.0d),
                             new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
                     )
             );
@@ -315,12 +314,14 @@ public class Controller {
 
     @FXML
     public void startMovingPiece(MouseEvent evt) {
+        PickResult result = evt.getPickResult();
+        movingRectangle  = (Rectangle) result.getIntersectedNode();
+        double x = movingRectangle.getLayoutX();
+        double y = movingRectangle.getLayoutY();
+        leavingRectangle.setLayoutX(x);
+        leavingRectangle.setLayoutY(y);
         offset = new Point2D(evt.getX(), evt.getY());
-
         leavingRectangle.setOpacity(1.0d);
-        leavingRectangle.setLayoutX(rectangle.getLayoutX());
-        leavingRectangle.setLayoutY(rectangle.getLayoutY());
-
         movingPiece = true;
     }
 
@@ -334,8 +335,8 @@ public class Controller {
             return;  // don't relocate() b/c will resize Pane
         }
 
-        Point2D mousePoint_p = rectangle.localToParent(mousePoint);
-        rectangle.relocate(mousePoint_p.getX() - offset.getX(), mousePoint_p.getY() - offset.getY());
+        Point2D mousePoint_p = movingRectangle.localToParent(mousePoint);
+        movingRectangle.relocate(mousePoint_p.getX() - offset.getX(), mousePoint_p.getY() - offset.getY());
     }
 
     private boolean inBoard(Point2D pt) {
@@ -348,11 +349,9 @@ public class Controller {
 
     @FXML
     public void finishMovingPiece(MouseEvent evt) {
-
         offset = new Point2D(0.0d, 0.0d);
-
         Point2D mousePoint = new Point2D(evt.getX(), evt.getY());
-        Point2D mousePointScene = rectangle.localToScene(mousePoint);
+        Point2D mousePointScene = movingRectangle.localToScene(mousePoint);
 
         Rectangle r = pickRectangle(mousePointScene.getX(), mousePointScene.getY());
 
@@ -367,24 +366,24 @@ public class Controller {
 
             Point2D rectScene = r.localToScene(r.getX(), r.getY());
             Point2D parent = boardPane.sceneToLocal(rectScene.getX(), rectScene.getY());
+            if (model.makeTurn((int) leavingRectangle.getLayoutX() / 100, (int) (7 - leavingRectangle.getLayoutY() / 100), (int) parent.getX() / 100, (int) (7 - parent.getY() / 100))) {
+                timeline.getKeyFrames().add(
+                        new KeyFrame(Duration.millis(100),
+                                new KeyValue(movingRectangle.layoutXProperty(), parent.getX()),
+                                new KeyValue(movingRectangle.layoutYProperty(), parent.getY()),
+                                new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
+                        )
+                );
 
-            timeline.getKeyFrames().add(
-                    new KeyFrame(Duration.millis(100),
-                            new KeyValue(rectangle.layoutXProperty(), parent.getX()),
-                            new KeyValue(rectangle.layoutYProperty(), parent.getY()),
-                            new KeyValue(rectangle.opacityProperty(), 1.0d),
-                            new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
-                    )
-            );
+            } else {
 
-        } else {
-
-            timeline.getKeyFrames().add(
-                    new KeyFrame(Duration.millis(100),
-                            new KeyValue(rectangle.opacityProperty(), 1.0d),
-                            new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
-                    )
-            );
+                timeline.getKeyFrames().add(
+                        new KeyFrame(Duration.millis(100),
+                                new KeyValue(movingRectangle.opacityProperty(), 1.0d),
+                                new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
+                        )
+                );
+            }
         }
 
         timeline.play();
@@ -392,39 +391,8 @@ public class Controller {
         movingPiece = false;
     }
 
-    public void mouseMoved(MouseEvent evt) {
 
-        Rectangle r = pickRectangle(evt);
 
-        if (r == null) {
-
-            if (currRect != null) {
-                // deselect previous
-                currRect.setEffect(null);
-            }
-
-            currRect = null;
-            return;  // might be out of area but w/i scene
-        }
-
-        if (r != currRect) {
-
-            if (currRect != null) {
-                // deselect previous
-                currRect.setEffect(null);
-            }
-
-            currRect = r;
-
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("[MOVED] in " + currRect.getId());
-            }
-
-            if (currRect != null) {  // new selection
-                currRect.setEffect(shadow);
-            }
-        }
-    }
 
     private Rectangle pickRectangle(MouseEvent evt) {
         return pickRectangle(evt.getSceneX(), evt.getSceneY());

@@ -25,7 +25,7 @@ public class Queen extends AbstractChessFigure {
     }
 
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenQueen" : "goldenQueen";
+        return color.equals(Color.BLACK) ? "greenQueen" : "goldenQueen";
     }
 
 }

@@ -30,6 +30,6 @@ public class Knight extends AbstractChessFigure {
     }
 
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenKnight" : "goldenKnight";
+        return color.equals(Color.BLACK) ? "greenKnight" : "goldenKnight";
     }
 }

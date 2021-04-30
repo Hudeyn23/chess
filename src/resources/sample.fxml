@@ -112,8 +112,6 @@
                                 </Pane>
                             </children>
                         </Group>
-                        <Rectangle fx:id="leavingRectangle" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="100.0" stroke="YELLOW" strokeType="INSIDE" width="100.0" />
-                        <Rectangle fx:id="rectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="100.0" onMouseDragged="#movePiece" onMousePressed="#startMovingPiece" onMouseReleased="#finishMovingPiece" stroke="transparent" strokeType="INSIDE" styleClass="greenPawn" width="100.0" />
                     </children>
                 </Pane>
             </children>

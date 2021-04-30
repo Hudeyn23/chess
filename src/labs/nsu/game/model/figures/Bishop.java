@@ -27,6 +27,6 @@ public class Bishop extends AbstractChessFigure {
 
     @Override
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenBishop" : "goldenBishop";
+        return color.equals(Color.BLACK) ? "greenBishop" : "goldenBishop";
     }
 }

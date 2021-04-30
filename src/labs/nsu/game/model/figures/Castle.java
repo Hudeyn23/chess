@@ -27,6 +27,6 @@ public class Castle extends AbstractChessFigure {
         return checkForwardTurn(start,dest,board);
     }
     public String getStyleClass() {
-        return color.equals(Color.GREEN) ? "greenCastle" : "goldenCastle";
+        return color.equals(Color.BLACK) ? "greenCastle" : "goldenCastle";
     }
 }
