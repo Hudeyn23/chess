@@ -13,7 +13,7 @@ public class Pawn extends AbstractChessFigure {
 
     @Override
     public boolean checkTurn(Cell start, Cell dest, ChessBoard board) {
-        return (dest.isEmpty() && canCellBeReached(start, dest, board)) || (!dest.isEmpty() && dest.getCellFigure().getColor() != color && canCellBeAttacked(start, dest, board));
+        return canCellBeReached(start, dest, board) || canCellBeAttacked(start, dest, board);
     }
 
     @Override

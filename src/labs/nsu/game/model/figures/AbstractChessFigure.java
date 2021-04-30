@@ -19,15 +19,12 @@ abstract class AbstractChessFigure implements Figure {
 
 
     protected boolean checkDiagonalTurn(Cell start, Cell dest, ChessBoard board) {
-        if (!dest.isEmpty() && dest.getCellFigure().getColor() == color) {
-            return false;
-        }
         if (Math.abs(start.getY() - dest.getY()) == Math.abs(start.getX() - dest.getX()) && Math.abs(start.getY() - dest.getY()) != 0) {
             Cell minX = start.getX() < dest.getX() ? start : dest;
             Cell maxX = start.getX() < dest.getX() ? dest : start;
             if (minX.getY() < maxX.getY()) {
                 for (int x = minX.getX() + 1, y = minX.getY() + 1;
-                     x != maxX.getX() - 1 && y != maxX.getY() - 1; x++, y++) {
+                     x != maxX.getX()  && y != maxX.getY(); x++, y++) {
                     if (!board.getCell(x, y).isEmpty())
                         return false;
 
@@ -35,8 +32,8 @@ abstract class AbstractChessFigure implements Figure {
                 return true;
             }
             if (minX.getY() > maxX.getY()) {
-                for (int x = minX.getX(), y = minX.getY();
-                     x != maxX.getX() - 1 && y != maxX.getY() - 1; x++, y--) {
+                for (int x = minX.getX() + 1, y = minX.getY() - 1;
+                     x != maxX.getX() && y != maxX.getY(); x++, y--) {
                     if (!board.getCell(x, y).isEmpty())
                         return false;
                 }
@@ -47,9 +44,6 @@ abstract class AbstractChessFigure implements Figure {
     }
 
     protected boolean checkForwardTurn(Cell start, Cell dest, ChessBoard board) {
-        if (!dest.isEmpty() && dest.getCellFigure().getColor() == color) {
-            return false;
-        }
         if (start.getX() == dest.getX() && start.getY() != dest.getY()) {
             int min = Math.min(start.getY(), dest.getY());
             int max = Math.max(start.getY(), dest.getY());
