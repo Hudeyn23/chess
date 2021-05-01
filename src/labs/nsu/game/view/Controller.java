@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import labs.nsu.game.model.ChessBoard;
 import labs.nsu.game.model.Model;
@@ -236,7 +237,7 @@ public class Controller {
             for (int j = 0; j < 8; j++) {
                 if (!board.getCell(j, i).isEmpty()) {
                     Rectangle figure = new Rectangle(100, 100);
-                    figure.setLayoutX(j*100);
+                    figure.setLayoutX(j * 100);
                     figure.setLayoutY(700 - i * 100);
                     figure.setFill(Color.DODGERBLUE);
                     figure.setStroke(Color.TRANSPARENT);
@@ -301,7 +302,7 @@ public class Controller {
     @FXML
     public void startMovingPiece(MouseEvent evt) {
         PickResult result = evt.getPickResult();
-        movingRectangle  = (Rectangle) result.getIntersectedNode();
+        movingRectangle = (Rectangle) result.getIntersectedNode();
         double x = movingRectangle.getLayoutX();
         double y = movingRectangle.getLayoutY();
         leavingRectangle.setLayoutX(x);
@@ -353,6 +354,7 @@ public class Controller {
             Point2D rectScene = r.localToScene(r.getX(), r.getY());
             Point2D parent = boardPane.sceneToLocal(rectScene.getX(), rectScene.getY());
             if (model.makeTurn((int) leavingRectangle.getLayoutX() / 100, (int) (7 - leavingRectangle.getLayoutY() / 100), (int) parent.getX() / 100, (int) (7 - parent.getY() / 100))) {
+                removeRectangle(parent.getX(),parent.getY());
                 timeline.getKeyFrames().add(
                         new KeyFrame(Duration.millis(100),
                                 new KeyValue(movingRectangle.layoutXProperty(), parent.getX()),
@@ -365,7 +367,8 @@ public class Controller {
 
                 timeline.getKeyFrames().add(
                         new KeyFrame(Duration.millis(100),
-                                new KeyValue(movingRectangle.opacityProperty(), 1.0d),
+                                new KeyValue(movingRectangle.layoutXProperty(), leavingRectangle.getLayoutX()),
+                                new KeyValue(movingRectangle.layoutYProperty(), leavingRectangle.getLayoutY()),
                                 new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
                         )
                 );
@@ -377,9 +380,9 @@ public class Controller {
         movingPiece = false;
     }
 
-
-
-
+    private void removeRectangle(double layoutX,double layoutY){
+        boardPane.getChildren().removeIf(node -> node.getLayoutX() == layoutX && node.getLayoutY() == layoutY);
+    }
     private Rectangle pickRectangle(MouseEvent evt) {
         return pickRectangle(evt.getSceneX(), evt.getSceneY());
     }

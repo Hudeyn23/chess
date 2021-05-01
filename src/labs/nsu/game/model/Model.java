@@ -4,21 +4,22 @@ import javafx.scene.paint.Color;
 import labs.nsu.game.model.figures.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Model {
     private ChessBoard board;
     private Cell whiteKing;
     private Cell blackKing;
-    private List<Cell> pins;
+    private Map<Cell, List<int[]>> pins;
     private List<Check> checks;
     private Color currentTurn = Color.WHITE;
-    private boolean isCheck = false;
     private List<Cell> kingPossibleTurns;
     private List<Cell> possibleDests;
 
     public Model() {
-        pins = new ArrayList<>();
+        pins = new HashMap<>();
         checks = new ArrayList<>();
         board = new ChessBoard();
         for (int i = 0; i < 8; i++) {
@@ -67,11 +68,16 @@ public class Model {
             return false;
         }
         if (checks.isEmpty()) {
-            if (pins.contains(turn.getStart())) {
+            if (pins.containsKey(turn.getStart())) {
+                if (isPinTurnPossible(turn.getStart(), turn.getDest())) {
+                    turn.makeTurn();
+                    changeTurn();
+                    return true;
+                }
                 return false;
             }
             if (turn.getStart().getCellFigure() instanceof King) {
-                changeKing(turn.getStart(),turn.getDest());
+                changeKing(turn.getStart(), turn.getDest());
             }
             turn.makeTurn();
             changeTurn();
@@ -80,31 +86,34 @@ public class Model {
         } else if (checks.size() >= 2) {
             if (currentTurnKing.getX() == startX && currentTurnKing.getY() == startY) {
                 if (turn.getStart().getCellFigure() instanceof King) {
-                    changeKing(turn.getStart(),turn.getDest());
+                    changeKing(turn.getStart(), turn.getDest());
                 }
                 turn.makeTurn();
+                changeTurn();
                 // обновить view
             }
             return false;
         } else {
             if (possibleDests.contains(turn.getDest())) {
                 if (turn.getStart().getCellFigure() instanceof King) {
-                    changeKing(turn.getStart(),turn.getDest());
+                    changeKing(turn.getStart(), turn.getDest());
                 }
-                changeTurn();
                 turn.makeTurn();
+                changeTurn();
+                return true;
                 // обновить view
             } else {
                 return false;
             }
         }
-        return false;
     }
 
 
     private void getChecksAndPins(Cell kingCell) {
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
         Cell possiblePin = null;
+        checks.clear();
+        pins.clear();
         for (int[] direction : directions) {
             for (int x = kingCell.getX() + direction[0], y = kingCell.getY() + direction[1]; ; x += direction[0], y += direction[1]) {
                 if (x > 7 || x < 0 || y > 7 || y < 0) break;
@@ -113,13 +122,13 @@ public class Model {
                         break;
                     }
                     possiblePin = board.getCell(x, y);
-                }
-                if (!board.getCell(x, y).isEmpty() && board.getCell(x, y).getCellFigure().getColor() != kingCell.getCellFigure().getColor()) {
+                } else if (!board.getCell(x, y).isEmpty() && board.getCell(x, y).getCellFigure().getColor() != kingCell.getCellFigure().getColor()) {
                     if (board.getCell(x, y).getCellFigure().canCellBeAttacked(board.getCell(x, y), kingCell, board)) {
                         if (possiblePin == null) {
                             checks.add(new Check(board.getCell(x, y), direction));
                         } else {
-                            pins.add(possiblePin);
+                            pins.computeIfAbsent(possiblePin, (k) -> new ArrayList<>());
+                            pins.get(possiblePin).add(direction);
                         }
                     }
                     break;
@@ -198,12 +207,27 @@ public class Model {
         currentTurn = currentTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
     }
 
-    private void changeKing(Cell start,Cell dest){
+    private void changeKing(Cell start, Cell dest) {
         if (currentTurn == Color.WHITE) {
             whiteKing = dest;
         } else {
             blackKing = dest;
         }
+    }
+
+    private boolean isPinTurnPossible(Cell pin, Cell dest) {
+        if (pins.get(pin).size() <= 1) {
+            int[] direction = pins.get(pin).get(0);
+            for (int x = pin.getX() + direction[0], y = pin.getY() + direction[1]; ; x += direction[0], y += direction[1]) {
+                if (x > 7 || x < 0 || y > 7 || y < 0) break;
+                if (x == dest.getX() && y == dest.getY()) return true;
+            }
+            for (int x = pin.getX() + direction[0] * -1, y = pin.getY() + direction[1] * -1; ; x += direction[0] * -1, y += direction[1] * -1) {
+                if (x > 7 || x < 0 || y > 7 || y < 0) break;
+                if (x == dest.getX() && y == dest.getY()) return true;
+            }
+        }
+        return false;
     }
 
 }

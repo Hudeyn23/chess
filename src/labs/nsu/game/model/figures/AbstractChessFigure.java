@@ -24,7 +24,7 @@ abstract class AbstractChessFigure implements Figure {
             Cell maxX = start.getX() < dest.getX() ? dest : start;
             if (minX.getY() < maxX.getY()) {
                 for (int x = minX.getX() + 1, y = minX.getY() + 1;
-                     x != maxX.getX()  && y != maxX.getY(); x++, y++) {
+                     x != maxX.getX() && y != maxX.getY(); x++, y++) {
                     if (!board.getCell(x, y).isEmpty())
                         return false;
 
@@ -64,6 +64,14 @@ abstract class AbstractChessFigure implements Figure {
         }
         return false;
 
+    }
+
+    protected boolean canCellBeDiagonalReached(Cell start, Cell dest, ChessBoard board) {
+        return Math.abs(start.getX() - dest.getX()) == Math.abs(start.getY() - dest.getY());
+    }
+
+    protected boolean canCellBeForwardReached(Cell start, Cell dest, ChessBoard board) {
+        return start.getX() == dest.getX() || start.getY() == dest.getY();
     }
 
 

@@ -19,12 +19,12 @@ public class Castle extends AbstractChessFigure {
 
     @Override
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
-        return checkForwardTurn(start,dest,board);
+        return canCellBeReached(start,dest,board);
     }
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
-        return checkForwardTurn(start,dest,board);
+        return canCellBeForwardReached(start,dest,board);
     }
     public String getStyleClass() {
         return color.equals(Color.BLACK) ? "greenCastle" : "goldenCastle";

@@ -13,7 +13,9 @@ public class Pawn extends AbstractChessFigure {
 
     @Override
     public boolean checkTurn(Cell start, Cell dest, ChessBoard board) {
-        return canCellBeReached(start, dest, board) || canCellBeAttacked(start, dest, board);
+        return dest.isEmpty() && canCellBeReached(start, dest, board) ||
+                canCellBeAttacked(start, dest, board) && !dest.isEmpty() && dest.getCellFigure().getColor() != color;
+
     }
 
     @Override
@@ -48,7 +50,7 @@ public class Pawn extends AbstractChessFigure {
 
 
     private boolean isPromotion(Cell start, Cell dest, ChessBoard board) {
-        return color == Color.WHITE ? dest.getX() == 7 : dest.getX() == 0;
+        return color == Color.WHITE ? dest.getY() == 7 : dest.getY() == 0;
     }
 
     private void makePromotion(Cell start, Cell dest, ChessBoard board) {

@@ -30,7 +30,7 @@ public class ChessTurn {
         if (start.isEmpty()) {
             return false;
         }
-        return startFigure.checkTurn(start, dest, board);
+        return start.getCellFigure().checkTurn(start, dest, board);
     }
 
 

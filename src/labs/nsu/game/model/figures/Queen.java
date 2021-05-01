@@ -16,12 +16,12 @@ public class Queen extends AbstractChessFigure {
 
     @Override
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
-        return checkDiagonalTurn(start, dest, board) || checkForwardTurn(start, dest, board);
+        return canCellBeReached(start, dest, board);
     }
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
-        return checkDiagonalTurn(start,dest,board) || checkForwardTurn(start, dest, board);
+        return canCellBeDiagonalReached(start, dest, board) || canCellBeForwardReached(start, dest, board);
     }
 
     public String getStyleClass() {

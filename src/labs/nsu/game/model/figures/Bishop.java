@@ -17,12 +17,12 @@ public class Bishop extends AbstractChessFigure {
 
     @Override
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
-        return checkDiagonalTurn(start, dest, board);
+        return canCellBeReached(start,dest,board);
     }
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
-        return checkDiagonalTurn(start, dest, board);
+        return canCellBeDiagonalReached(start,dest,board);
     }
 
     @Override
