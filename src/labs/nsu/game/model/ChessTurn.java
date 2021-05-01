@@ -8,13 +8,11 @@ public class ChessTurn {
     private final Cell start;
     private final Cell dest;
     private ChessBoard board;
-    private final Figure startFigure;
 
     public ChessTurn(Cell start, Cell dest, ChessBoard board) {
         this.start = start;
         this.dest = dest;
         this.board = board;
-        startFigure = start.getCellFigure();
     }
 
     public Cell getStart() {

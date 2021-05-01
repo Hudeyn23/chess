@@ -1,0 +1,62 @@
+.board_square {
+    -fx-fill: #1e90ff;
+}
+
+.board_square_lt {
+    -fx-fill: #cccccc;
+}
+
+.board {
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-border-color: #2e8b57;
+    -fx-border-width: 2px;
+    -fx-padding: 10;
+    -fx-spacing: 8;
+}
+
+.greenPawn {
+    -fx-fill: url("Figures/Black/Pawn/pawn.png")
+}
+
+.greenBishop {
+    -fx-fill: url("/Figures/Black/Bishop/bishop.png")
+}
+
+.greenKing {
+    -fx-fill: url("/Figures/Black/King/king.png")
+}
+
+.greenQueen {
+    -fx-fill: url("/Figures/Black/Queen/queen.png")
+}
+
+.greenCastle {
+    -fx-fill: url("/Figures/Black/Castle/castle.png")
+}
+.greenKnight {
+    -fx-fill: url("/Figures/Black/Knight/knight.png")
+}
+
+.goldenPawn {
+    -fx-fill: url("/Figures/White/Pawn/pawn.png")
+}
+
+.goldenBishop {
+    -fx-fill: url("/Figures/White/Bishop/bishop.png")
+}
+
+.goldenKing {
+    -fx-fill: url("/Figures/White/King/king.png")
+}
+
+.goldenQueen {
+    -fx-fill: url("/Figures/White/Queen/queen.png")
+}
+
+.goldenCastle {
+    -fx-fill: url("/Figures/White/Castle/castle.png")
+}
+.goldenKnight {
+    -fx-fill: url("/Figures/White/Knight/knight.png")
+}

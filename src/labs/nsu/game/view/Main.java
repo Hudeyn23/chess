@@ -11,14 +11,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Controller.class.getResource("/sample.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Controller.class.getResource("/View/sample.fxml"));
 
         Parent p = fxmlLoader.load();
 
         Controller c = fxmlLoader.getController();
 
         Scene scene = new Scene(p);
-        scene.getStylesheets().add("sample.css");
+        scene.getStylesheets().add("View/sample.css");
         primaryStage.setScene( scene );
         primaryStage.show();
     }

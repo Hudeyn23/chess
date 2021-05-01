@@ -17,6 +17,7 @@ public class Model {
     private Color currentTurn = Color.WHITE;
     private List<Cell> kingPossibleTurns;
     private List<Cell> possibleDests;
+    private boolean newTurn = true;
 
     public Model() {
         pins = new HashMap<>();
@@ -33,14 +34,14 @@ public class Model {
             board.getCell(0, i).setCellFigure(new Castle(figureColor));
             board.getCell(1, i).setCellFigure(new Knight(figureColor));
             board.getCell(2, i).setCellFigure(new Bishop(figureColor));
+            board.getCell(3, i).setCellFigure(new Queen(figureColor));
             if (figureColor.equals(Color.WHITE)) {
                 Figure king = new King(Color.WHITE);
-                (whiteKing = board.getCell(3, i)).setCellFigure(king);
+                (whiteKing = board.getCell(4, i)).setCellFigure(king);
             } else {
                 Figure king = new King(Color.BLACK);
-                (blackKing = board.getCell(3, i)).setCellFigure(king);
+                (blackKing = board.getCell(4, i)).setCellFigure(king);
             }
-            board.getCell(4, i).setCellFigure(new Queen(figureColor));
             board.getCell(5, i).setCellFigure(new Bishop(figureColor));
             board.getCell(6, i).setCellFigure(new Knight(figureColor));
             board.getCell(7, i).setCellFigure(new Castle(figureColor));
@@ -58,8 +59,10 @@ public class Model {
     public boolean makeTurn(int startX, int startY, int destX, int destY) {
         Cell currentTurnKing = currentTurn == Color.BLACK ? blackKing : whiteKing;
         ChessTurn turn = new ChessTurn(board.getCell(startX, startY), board.getCell(destX, destY), board);
-        if (isMate()) {
-            // конец игры
+        if (newTurn) {
+            if (isMate()) {
+                // конец игры
+            }
         }
         if (!turn.checkTurn()) {
             return false;
@@ -90,22 +93,12 @@ public class Model {
                 }
                 turn.makeTurn();
                 changeTurn();
-                // обновить view
-            }
-            return false;
-        } else {
-            if (possibleDests.contains(turn.getDest())) {
-                if (turn.getStart().getCellFigure() instanceof King) {
-                    changeKing(turn.getStart(), turn.getDest());
-                }
-                turn.makeTurn();
-                changeTurn();
                 return true;
                 // обновить view
-            } else {
-                return false;
             }
         }
+        newTurn = false;
+        return false;
     }
 
 
@@ -205,6 +198,7 @@ public class Model {
 
     private void changeTurn() {
         currentTurn = currentTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
+        newTurn = true;
     }
 
     private void changeKing(Cell start, Cell dest) {

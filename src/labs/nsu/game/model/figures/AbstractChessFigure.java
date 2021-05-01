@@ -57,7 +57,7 @@ abstract class AbstractChessFigure implements Figure {
             int min = Math.min(start.getX(), dest.getX());
             int max = Math.max(start.getX(), dest.getX());
             for (int i = min + 1; i < max - 1; i++) {
-                if (!board.getCell(i, start.getX()).isEmpty())
+                if (!board.getCell(i, start.getY()).isEmpty())
                     return false;
             }
             return true;
