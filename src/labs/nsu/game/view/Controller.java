@@ -4,42 +4,33 @@ package labs.nsu.game.view;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.effect.InnerShadow;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import labs.nsu.game.model.ChessBoard;
+import labs.nsu.game.model.GameStatus;
 import labs.nsu.game.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-/**
- * @author carl
- */
 public class Controller {
 
-    private final Logger log = Logger.getLogger("RooksAndBishopsController");
+
     @FXML
     Rectangle movingRectangle;
     @FXML
     Rectangle leavingRectangle;
 
-    /*	private final int NUM_ROWS = 8;
-        private final int NUM_COLS = 8;
-        private final double PADDING = 40;
-    */
     @FXML
     VBox vbox;
 
@@ -225,13 +216,13 @@ public class Controller {
     Rectangle sq6_7;
     @FXML
     Rectangle sq7_7;
-    List<Rectangle> figures = new ArrayList<>();
     private final List<Pane> panes = new ArrayList<>();
-    Model model = new Model();
+    Model model;
 
     @FXML
     public void initialize() {
         leavingRectangle = new Rectangle(100, 100);
+        model = new Model();
         ChessBoard board = model.getBoard();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -263,10 +254,6 @@ public class Controller {
 
         vbox.setMaxWidth(800.0d);
     }
-
-    private final InnerShadow shadow = new InnerShadow();
-
-    private Rectangle currRect;
 
     private Point2D offset = new Point2D(0.0d, 0.0d);
     private boolean movingPiece = false;
@@ -319,7 +306,7 @@ public class Controller {
         Point2D mousePoint_s = new Point2D(evt.getSceneX(), evt.getSceneY());
 
         if (!inBoard(mousePoint_s)) {
-            return;  // don't relocate() b/c will resize Pane
+            return;
         }
 
         Point2D mousePoint_p = movingRectangle.localToParent(mousePoint);
@@ -347,14 +334,11 @@ public class Controller {
         timeline.setAutoReverse(false);
 
         if (r != null) {
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("[FINISH] r=" + r.getId());
-            }
 
             Point2D rectScene = r.localToScene(r.getX(), r.getY());
             Point2D parent = boardPane.sceneToLocal(rectScene.getX(), rectScene.getY());
             if (model.makeTurn((int) leavingRectangle.getLayoutX() / 100, (int) (7 - leavingRectangle.getLayoutY() / 100), (int) parent.getX() / 100, (int) (7 - parent.getY() / 100))) {
-                removeRectangle(parent.getX(),parent.getY());
+                removeRectangle(parent.getX(), parent.getY());
                 timeline.getKeyFrames().add(
                         new KeyFrame(Duration.millis(100),
                                 new KeyValue(movingRectangle.layoutXProperty(), parent.getX()),
@@ -374,15 +358,37 @@ public class Controller {
                 );
             }
         }
-
         timeline.play();
-
+        timeline.setOnFinished(this::checkGameStatus);
         movingPiece = false;
     }
 
-    private void removeRectangle(double layoutX,double layoutY){
+
+    private void checkGameStatus(ActionEvent actionEvent) {
+        if(model.getGameStatus() == GameStatus.GAME) return;
+        String message;
+        if(model.getGameStatus() == GameStatus.WHITE_WIN) {
+            message = "Congratulations, White win";
+        } else if(model.getGameStatus() == GameStatus.BLACK_WIN){
+            message = "Congratulations, Black win";
+        } else{
+            message = "There was a stalemate in the game. Draw";
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("End Game");
+        alert.setHeaderText("Hey, it`s game end");
+        alert.setContentText(message);
+
+        alert.show();
+
+    }
+
+
+
+    private void removeRectangle(double layoutX, double layoutY) {
         boardPane.getChildren().removeIf(node -> node.getLayoutX() == layoutX && node.getLayoutY() == layoutY);
     }
+
     private Rectangle pickRectangle(MouseEvent evt) {
         return pickRectangle(evt.getSceneX(), evt.getSceneY());
     }
@@ -390,28 +396,16 @@ public class Controller {
     private Rectangle pickRectangle(double sceneX, double sceneY) {
         Rectangle pickedRectangle = null;
         for (Pane row : panes) {
-
-            //
-            // getX/Y == getSceneX/Y because handler registerd on Scene and
-            // not node
-            //
-
             Point2D mousePoint = new Point2D(sceneX, sceneY);
             Point2D mpLocal = row.sceneToLocal(mousePoint);
 
             if (row.contains(mpLocal)) {
-                if (log.isLoggable(Level.FINEST)) {
-                    log.finest("[PICK] selected row=" + row.getId());
-                }
 
                 for (Node cell : row.getChildrenUnmodifiable()) {
 
                     Point2D mpLocalCell = cell.sceneToLocal(mousePoint);
 
                     if (cell.contains(mpLocalCell)) {
-                        if (log.isLoggable(Level.FINEST)) {
-                            log.finest("[PICK] selected cell=" + cell.getId());
-                        }
                         pickedRectangle = (Rectangle) cell;
                         break;
                     }

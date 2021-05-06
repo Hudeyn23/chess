@@ -21,7 +21,7 @@ public class Queen extends AbstractChessFigure {
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
-        return canCellBeDiagonalReached(start, dest, board) || canCellBeForwardReached(start, dest, board);
+        return canCellBeDiagonalReached(start, dest) || canCellBeForwardReached(start, dest);
     }
 
     public String getStyleClass() {

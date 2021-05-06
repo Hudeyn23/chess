@@ -7,7 +7,7 @@ import java.util.Objects;
 public class ChessTurn {
     private final Cell start;
     private final Cell dest;
-    private ChessBoard board;
+    private final ChessBoard board;
 
     public ChessTurn(Cell start, Cell dest, ChessBoard board) {
         this.start = start;
@@ -43,10 +43,6 @@ public class ChessTurn {
     @Override
     public int hashCode() {
         return Objects.hash(start, dest, board);
-    }
-
-    public ChessBoard getBoard() {
-        return board;
     }
 
     public Cell getDest() {

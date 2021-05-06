@@ -12,17 +12,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader fxmlLoader = new FXMLLoader(Controller.class.getResource("/View/sample.fxml"));
-
         Parent p = fxmlLoader.load();
-
-        Controller c = fxmlLoader.getController();
-
         Scene scene = new Scene(p);
-        scene.getStylesheets().add("View/sample.css");
-        primaryStage.setScene( scene );
+        scene.getStylesheets().add("/View/sample.css");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 
 
     public static void main(String[] args) {

@@ -20,8 +20,8 @@ public class Pawn extends AbstractChessFigure {
 
     @Override
     public void makeTurn(Cell start, Cell dest, ChessBoard board) {
-        if (isPromotion(start, dest, board)) {
-            makePromotion(start, dest, board);
+        if (isPromotion(dest)) {
+            makePromotion(start, dest);
         } else {
             dest.setCellFigure(this);
             start.setCellFigure(null);
@@ -49,11 +49,11 @@ public class Pawn extends AbstractChessFigure {
     }
 
 
-    private boolean isPromotion(Cell start, Cell dest, ChessBoard board) {
+    private boolean isPromotion(Cell dest) {
         return color == Color.WHITE ? dest.getY() == 7 : dest.getY() == 0;
     }
 
-    private void makePromotion(Cell start, Cell dest, ChessBoard board) {
+    private void makePromotion(Cell start, Cell dest) {
         dest.setCellFigure(new Queen(color));
         start.setCellFigure(null);
     }

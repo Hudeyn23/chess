@@ -37,12 +37,11 @@ public class King extends AbstractChessFigure {
     public void makeTurn(Cell start, Cell dest, ChessBoard board) {
         if (castling(start, dest, board)) {
             makeCastling(start, dest, board);
-            isCastlingPossible = false;
         } else {
             dest.setCellFigure(this);
             start.setCellFigure(null);
-            isCastlingPossible = false;
         }
+        isCastlingPossible = false;
     }
 
 

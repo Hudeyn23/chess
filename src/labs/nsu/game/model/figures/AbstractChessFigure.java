@@ -66,11 +66,11 @@ abstract class AbstractChessFigure implements Figure {
 
     }
 
-    protected boolean canCellBeDiagonalReached(Cell start, Cell dest, ChessBoard board) {
+    protected boolean canCellBeDiagonalReached(Cell start, Cell dest) {
         return Math.abs(start.getX() - dest.getX()) == Math.abs(start.getY() - dest.getY());
     }
 
-    protected boolean canCellBeForwardReached(Cell start, Cell dest, ChessBoard board) {
+    protected boolean canCellBeForwardReached(Cell start, Cell dest) {
         return start.getX() == dest.getX() || start.getY() == dest.getY();
     }
 

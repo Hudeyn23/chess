@@ -22,7 +22,7 @@ public class Bishop extends AbstractChessFigure {
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
-        return canCellBeDiagonalReached(start,dest,board);
+        return canCellBeDiagonalReached(start,dest);
     }
 
     @Override

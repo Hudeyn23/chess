@@ -15,8 +15,9 @@
     -fx-spacing: 8;
 }
 
+
 .greenPawn {
-    -fx-fill: url("Figures/Black/Pawn/pawn.png")
+    -fx-fill: url("/Figures/Black/Pawn/pawn.png")
 }
 
 .greenBishop {

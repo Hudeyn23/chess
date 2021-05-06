@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 import labs.nsu.game.model.figures.Figure;
 
 public class Cell {
-    private Color cellColor;
     private Figure cellFigure;
     private final int x, y;
 
@@ -20,8 +19,7 @@ public class Cell {
         return y;
     }
 
-    public Cell(Color cellColor, Figure cellFigure, int x, int y) {
-        this.cellColor = cellColor;
+    public Cell(Figure cellFigure, int x, int y) {
         this.cellFigure = cellFigure;
         this.x = x;
         this.y = y;
