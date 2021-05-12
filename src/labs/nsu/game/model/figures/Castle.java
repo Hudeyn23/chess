@@ -21,7 +21,10 @@ public class Castle extends AbstractChessFigure {
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
         return canCellBeReached(start,dest,board);
     }
-
+    @Override
+    public String getFigureSymbol() {
+        return "R";
+    }
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
         return canCellBeForwardReached(start,dest);

@@ -12,6 +12,7 @@ public interface Figure {
 
     boolean checkTurn(Cell start, Cell dest, ChessBoard board);
 
+    String getFigureSymbol();
 
     boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board);
 

@@ -27,6 +27,10 @@ public class Pawn extends AbstractChessFigure {
             start.setCellFigure(null);
         }
     }
+    @Override
+    public String getFigureSymbol() {
+        return "p";
+    }
 
 
     @Override

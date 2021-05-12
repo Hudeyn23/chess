@@ -24,6 +24,11 @@ public class Queen extends AbstractChessFigure {
         return canCellBeDiagonalReached(start, dest) || canCellBeForwardReached(start, dest);
     }
 
+    @Override
+    public String getFigureSymbol() {
+        return "Q";
+    }
+
     public String getStyleClass() {
         return color.equals(Color.BLACK) ? "greenQueen" : "goldenQueen";
     }

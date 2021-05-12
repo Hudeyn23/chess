@@ -32,7 +32,10 @@ public class King extends AbstractChessFigure {
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
         return Math.abs(start.getX() - dest.getX()) <= 1 && Math.abs(start.getY() - dest.getY()) <= 1;
     }
-
+    @Override
+    public String getFigureSymbol() {
+        return "k";
+    }
     @Override
     public void makeTurn(Cell start, Cell dest, ChessBoard board) {
         if (castling(start, dest, board)) {

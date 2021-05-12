@@ -16,8 +16,9 @@ public class Model {
     private final List<Check> checks;
     private Color currentTurn;
     private List<Cell> possibleDests;
-    private boolean newTurn = true;
     private GameStatus status;
+    private ChessTurn lastTurn;
+    private ChessTurn turn;
 
     public Model() {
         currentTurn = Color.WHITE;
@@ -27,7 +28,6 @@ public class Model {
         board = new ChessBoard();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                Color cellColor = i + j % 2 == 0 ? Color.BLACK : Color.WHITE;
                 board.setCell(i, j, new Cell(null, i, j));
             }
         }
@@ -60,9 +60,8 @@ public class Model {
 
     public boolean makeTurn(int startX, int startY, int destX, int destY) {
         Cell currentTurnKing = currentTurn == Color.BLACK ? blackKing : whiteKing;
-        ChessTurn turn = new ChessTurn(board.getCell(startX, startY), board.getCell(destX, destY), board);
+        turn = new ChessTurn(board.getCell(startX, startY), board.getCell(destX, destY), board);
         if (!turn.checkTurn() || turn.getStart().getCellFigure().getColor() != currentTurn) {
-            newTurn = false;
             return false;
         }
         if (checks.isEmpty()) {
@@ -72,7 +71,6 @@ public class Model {
                     changeTurn();
                     return true;
                 }
-                newTurn = false;
                 return false;
             }
             if (turn.getStart().getCellFigure() instanceof King) {
@@ -199,11 +197,11 @@ public class Model {
     }
 
     private void changeTurn() {
+        lastTurn = turn;
         currentTurn = currentTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
         if (isMate()) {
             status = currentTurn == Color.WHITE ? GameStatus.BLACK_WIN : GameStatus.WHITE_WIN;
         }
-        newTurn = true;
     }
 
     private void changeKing(Cell start, Cell dest) {
@@ -231,6 +229,10 @@ public class Model {
 
     public GameStatus getGameStatus() {
         return status;
+    }
+
+    public String getLastTurn() {
+        return lastTurn.toString();
     }
 
 }

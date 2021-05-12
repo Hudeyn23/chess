@@ -1,13 +1,12 @@
 package labs.nsu.game.model;
 
-import labs.nsu.game.model.figures.Figure;
-
 import java.util.Objects;
 
 public class ChessTurn {
     private final Cell start;
     private final Cell dest;
     private final ChessBoard board;
+    private  String string = null;
 
     public ChessTurn(Cell start, Cell dest, ChessBoard board) {
         this.start = start;
@@ -20,6 +19,7 @@ public class ChessTurn {
     }
 
     public void makeTurn() {
+        string = getString();
         start.getCellFigure().makeTurn(start, dest, board);
     }
 
@@ -49,5 +49,23 @@ public class ChessTurn {
         return dest;
     }
 
+    private String getString() {
+        StringBuilder turn = new StringBuilder();
+        turn.append(getFigure());
+        if (dest.getCellFigure() != null) {
+            turn.append("x");
+        }
+        turn.append(dest.toString());
+        return new String(turn);
+    }
+
+    @Override
+    public String toString() {
+        return string;
+    }
+
+    private String getFigure() {
+        return start.getCellFigure().getFigureSymbol();
+    }
 
 }

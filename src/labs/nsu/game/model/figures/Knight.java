@@ -22,6 +22,10 @@ public class Knight extends AbstractChessFigure {
     public boolean canCellBeAttacked(Cell start, Cell dest, ChessBoard board) {
         return canCellBeReached(start, dest, board);
     }
+    @Override
+    public String getFigureSymbol() {
+        return "N";
+    }
 
     @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {

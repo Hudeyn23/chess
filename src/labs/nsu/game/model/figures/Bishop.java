@@ -21,6 +21,11 @@ public class Bishop extends AbstractChessFigure {
     }
 
     @Override
+    public String getFigureSymbol() {
+        return "B";
+    }
+
+    @Override
     public boolean canCellBeReached(Cell start, Cell dest, ChessBoard board) {
         return canCellBeDiagonalReached(start,dest);
     }

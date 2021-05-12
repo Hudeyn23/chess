@@ -10,6 +10,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.Pane;
@@ -23,6 +25,7 @@ import labs.nsu.game.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class Controller {
 
 
@@ -216,31 +219,21 @@ public class Controller {
     Rectangle sq6_7;
     @FXML
     Rectangle sq7_7;
+    @FXML
+    private Button restart;
+    @FXML
+    private TextArea textEditor;
+    private int lineCount = 0;
     private final List<Pane> panes = new ArrayList<>();
     Model model;
 
     @FXML
     public void initialize() {
+        textEditor.setDisable(true);
+        textEditor.setWrapText(true);
         leavingRectangle = new Rectangle(100, 100);
         model = new Model();
-        ChessBoard board = model.getBoard();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (!board.getCell(j, i).isEmpty()) {
-                    Rectangle figure = new Rectangle(100, 100);
-                    figure.setLayoutX(j * 100);
-                    figure.setLayoutY(700 - i * 100);
-                    figure.setFill(Color.DODGERBLUE);
-                    figure.setStroke(Color.TRANSPARENT);
-                    figure.getStyleClass().add(board.getCell(j, i).getCellFigure().getStyleClass());
-                    figure.setOnMouseDragged(this::movePiece);
-                    figure.setOnMousePressed(this::startMovingPiece);
-                    figure.setOnMouseReleased(this::finishMovingPiece);
-                    boardPane.getChildren().add(figure);
-                }
-            }
-        }
-
+        newBoard();
         panes.add(row0);
         panes.add(row1);
         panes.add(row2);
@@ -346,6 +339,7 @@ public class Controller {
                                 new KeyValue(leavingRectangle.opacityProperty(), 0.0d)
                         )
                 );
+                writeTurn();
 
             } else {
 
@@ -365,28 +359,26 @@ public class Controller {
 
 
     private void checkGameStatus(ActionEvent actionEvent) {
-        if(model.getGameStatus() == GameStatus.GAME) return;
+        if (model.getGameStatus() == GameStatus.GAME) return;
         String message;
-        if(model.getGameStatus() == GameStatus.WHITE_WIN) {
+        if (model.getGameStatus() == GameStatus.WHITE_WIN) {
             message = "Congratulations, White win";
-        } else if(model.getGameStatus() == GameStatus.BLACK_WIN){
+        } else if (model.getGameStatus() == GameStatus.BLACK_WIN) {
             message = "Congratulations, Black win";
-        } else{
+        } else {
             message = "There was a stalemate in the game. Draw";
         }
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("End Game");
         alert.setHeaderText("Hey, it`s game end");
         alert.setContentText(message);
-
         alert.show();
 
     }
 
 
-
     private void removeRectangle(double layoutX, double layoutY) {
-        boardPane.getChildren().removeIf(node -> node.getLayoutX() == layoutX && node.getLayoutY() == layoutY);
+        boardPane.getChildren().removeIf(node -> node.getLayoutX() == layoutX && node.getLayoutY() == layoutY && node.getId() == null);
     }
 
     private Rectangle pickRectangle(MouseEvent evt) {
@@ -414,5 +406,55 @@ public class Controller {
             }
         }
         return pickedRectangle;
+    }
+
+    @FXML
+    void restart(ActionEvent event) {
+        textEditor.appendText("kavo");
+        clearBoard();
+        newBoard();
+        textEditor.clear();
+
+    }
+
+    private void newBoard() {
+        model = new Model();
+        ChessBoard board = model.getBoard();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (!board.getCell(j, i).isEmpty()) {
+                    Rectangle figure = new Rectangle(100, 100);
+                    figure.setLayoutX(j * 100);
+                    figure.setLayoutY(700 - i * 100);
+                    figure.setFill(Color.DODGERBLUE);
+                    figure.setStroke(Color.TRANSPARENT);
+                    figure.getStyleClass().add(board.getCell(j, i).getCellFigure().getStyleClass());
+                    figure.setOnMouseDragged(this::movePiece);
+                    figure.setOnMousePressed(this::startMovingPiece);
+                    figure.setOnMouseReleased(this::finishMovingPiece);
+                    boardPane.getChildren().add(figure);
+                }
+            }
+        }
+    }
+
+    private void clearBoard() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                removeRectangle(j * 100, 700 - i * 100);
+
+            }
+        }
+    }
+
+    private void writeTurn() {
+       if(lineCount == 2){
+            textEditor.appendText(System.getProperty("line.separator"));
+            textEditor.appendText(model.getLastTurn() + " ");
+            lineCount = 1;
+        } else {
+            textEditor.appendText(model.getLastTurn()+" ");
+            lineCount++;
+        }
     }
 }
